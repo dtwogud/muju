@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios';
+import React from "react";
+import { render } from 'react-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    isLoading: true,
+    data : []
+  };
+
+  muju = async() => { 
+    const today = new Date();
+    let year = today.getFullYear()
+    let month = today.getMonth()
+    let date = today.getDate()
+
+    const {data}= await axios.get(`https://www.mdysresort.com/convert_main_slope_191223.asp?g=S&n_date=${year}-${month}-${date}`)
+    this.setState({data, isLoading : false})
+    console.log({data})
+  }
+  componentDidMount() {
+    this.muju()
+  }
+  
+  render(){
+    const {isLoading, data} = this.state
+    return (
+      <div className="container">
+      { isLoading ? (
+      <div className="loader"><span className="loader__text">Loading...</span> </div> 
+      ) : (
+      <div className="slope">
+        {data}
+      </div>
+      )}
+  </div>)
+  }
 }
 
 export default App;
